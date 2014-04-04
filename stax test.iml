@@ -19,6 +19,8 @@
     <orderEntry type="library" name="Maven: de.undercouch:bson4jackson:2.1.0" level="project" />
     <orderEntry type="library" name="Maven: javax.persistence:persistence-api:1.0.2" level="project" />
     <orderEntry type="library" name="Maven: commons-io:commons-io:2.4" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.maven.archetypes:maven-archetype-quickstart:1.1" level="project" />
+    <orderEntry type="library" name="commons-compress-1" level="project" />
   </component>
 </module>
 

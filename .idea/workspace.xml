@@ -7,9 +7,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f23501ba-144c-4f97-af9b-1b4172d29a0c" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/artifacts/stax_test_jar.xml" afterPath="$PROJECT_DIR$/.idea/artifacts/stax_test_jar.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MOVED" beforePath="D:\Hirotaka\IdeaProjects\wikitext\stax test.iml" afterPath="$PROJECT_DIR$/stax_test.iml" />
     </list>
     <ignored path="stax test.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -452,7 +450,11 @@
       <created>1396649702704</created>
       <updated>1396649702704</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="hoge">
+      <created>1396651656873</created>
+      <updated>1396651656873</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="ToolWindowManager">

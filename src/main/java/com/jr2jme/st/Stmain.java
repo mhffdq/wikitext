@@ -8,10 +8,7 @@ import org.mongojack.JacksonDBCollection;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-import java.io.BufferedInputStream;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 import java.net.UnknownHostException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -33,27 +30,18 @@ public class Stmain {
             e.printStackTrace();
         }
         assert mongo != null;
-        DB db=mongo.getDB("wikipedia_test");
+        DB db=mongo.getDB("wikipediaDB_kondou");
         DBCollection dbCollection=db.getCollection("text_test2");
+        JacksonDBCollection<Wikitext,String> coll = JacksonDBCollection.wrap(dbCollection, Wikitext.class,String.class);
         XMLInputFactory factory = XMLInputFactory.newInstance();
 
         XMLStreamReader reader = null;
         BufferedInputStream stream = null;
-        JacksonDBCollection<Wikitext,String> coll = JacksonDBCollection.wrap(dbCollection, Wikitext.class,String.class);
+
+        InputStream is = null;
         try {
-            // 2. 入力に使用するファイルの設定
-            stream = new BufferedInputStream(
-                    new FileInputStream(args[0]));
-
-            // 3. パーサの生成
-            try {
-                reader = factory.createXMLStreamReader(stream);
-            } catch (XMLStreamException e) {
-                e.printStackTrace();
-            }
-
+            reader = factory.createXMLStreamReader(UnBzip2.unbzip2());
             // 4. イベントループ
-
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'");
             sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
             Boolean inrev=false;
@@ -116,7 +104,8 @@ public class Stmain {
                     if("text".equals(reader.getName().getLocalPart())){
                         //System.out.println(reader.getElementText());
                         text = reader.getElementText();
-                        coll.insert(new Wikitext(title,date,name,text,id,comment));
+                        System.out.println(title+date+name+text+id+comment);
+                        //coll.insert(new Wikitext(title,date,name,text,id,comment));
                         changetitleflag=true;
                         inrev=false;
                         incon=false;
@@ -124,7 +113,7 @@ public class Stmain {
                     //System.out.println(reader.getName().getLocalPart());
                 }
             }
-        } catch (FileNotFoundException ex) {
+        } catch (IOException ex) {
             System.err.println(args[0] + " が見つかりません");
         } catch (XMLStreamException ex) {
             System.err.println(args[0] + " の読み込みに失敗しました");

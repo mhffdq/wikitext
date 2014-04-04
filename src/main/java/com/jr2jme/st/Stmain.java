@@ -65,7 +65,7 @@ public class Stmain {
                         title = reader.getElementText();
                         if(changetitleflag){
                             countarticle++;
-                            if(countarticle>10) {
+                            if(countarticle>10000) {
                                 break;
                             }
                         }
@@ -74,7 +74,7 @@ public class Stmain {
                         inrev=true;
                     }
                     if("id".equals(reader.getName().getLocalPart())){
-                        if(inrev==true&&incon==false){
+                        if(inrev&&!incon){
                             id=Integer.valueOf(reader.getElementText());
                         }
                     }
@@ -104,8 +104,8 @@ public class Stmain {
                     if("text".equals(reader.getName().getLocalPart())){
                         //System.out.println(reader.getElementText());
                         text = reader.getElementText();
-                        System.out.println(title+date+name+text+id+comment);
-                        //coll.insert(new Wikitext(title,date,name,text,id,comment));
+                        //System.out.println(title+date+name+text+id+comment);
+                        coll.insert(new Wikitext(title,date,name,text,id,comment));
                         changetitleflag=true;
                         inrev=false;
                         incon=false;

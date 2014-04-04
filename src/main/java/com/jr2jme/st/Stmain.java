@@ -22,7 +22,7 @@ public class Stmain {
 
 
     public static void main(String[] args){
-        System.out.println(args[0]);
+        //System.out.println(args[0]);
         Mongo mongo=null;
         try {
             mongo = new Mongo("192.168.11.6",27017);
@@ -114,9 +114,9 @@ public class Stmain {
                 }
             }
         } catch (IOException ex) {
-            System.err.println(args[0] + " が見つかりません");
+            System.err.println(ex + " が見つかりません");
         } catch (XMLStreamException ex) {
-            System.err.println(args[0] + " の読み込みに失敗しました");
+            System.err.println(ex + " の読み込みに失敗しました");
         } finally {
             // 5. パーサ、ストリームのクローズ
             if (reader != null) {
@@ -133,6 +133,7 @@ public class Stmain {
                     ex.printStackTrace();
                 }
             }
+            mongo.close();
         }
     }
 }

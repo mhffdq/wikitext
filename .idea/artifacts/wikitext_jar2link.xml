@@ -1,0 +1,19 @@
+<component name="ArtifactManager">
+  <artifact name="wikitext:jar2link">
+    <output-path>$PROJECT_DIR$/out/artifacts/wikitext_jar2link</output-path>
+    <root id="root">
+      <element id="archive" name="wikitext.jar">
+        <element id="module-output" name="wikitext" />
+      </element>
+      <element id="library" level="project" name="Maven: commons-io:commons-io:2.4" />
+      <element id="library" level="project" name="Maven: com.fasterxml.jackson.core:jackson-databind:2.2.3" />
+      <element id="library" level="project" name="Maven: org.mongojack:mongojack:2.0.0" />
+      <element id="library" level="project" name="commons-compress-1" />
+      <element id="library" level="project" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.2.3" />
+      <element id="library" level="project" name="Maven: org.mongodb:mongo-java-driver:2.11.3" />
+      <element id="library" level="project" name="Maven: javax.persistence:persistence-api:1.0.2" />
+      <element id="library" level="project" name="Maven: com.fasterxml.jackson.core:jackson-core:2.2.3" />
+      <element id="library" level="project" name="Maven: de.undercouch:bson4jackson:2.2.0" />
+    </root>
+  </artifact>
+</component>

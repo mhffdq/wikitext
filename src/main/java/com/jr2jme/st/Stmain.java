@@ -2,7 +2,7 @@ package com.jr2jme.st;
 
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
-import com.mongodb.Mongo;
+import com.mongodb.MongoClient;
 import org.mongojack.JacksonDBCollection;
 
 import javax.xml.stream.XMLInputFactory;
@@ -23,9 +23,9 @@ public class Stmain {
 
     public static void main(String[] args){
         //System.out.println(args[0]);
-        Mongo mongo=null;
+        MongoClient mongo=null;
         try {
-            mongo = new Mongo("dragons.db.ss.is.nagoya-u.ac.jp",27017);
+            mongo = new MongoClient("dragons.db.ss.is.nagoya-u.ac.jp",27017);
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }        assert mongo != null;
@@ -37,7 +37,6 @@ public class Stmain {
         XMLStreamReader reader = null;
         BufferedInputStream stream = null;
 
-        InputStream is = null;
         try {
             reader = factory.createXMLStreamReader(UnBzip2.unbzip2());
             // 4. イベントループ
@@ -47,9 +46,11 @@ public class Stmain {
             Boolean incon=false;
             String comment="";
             String title= "";
-            String name="";
+            String name=""
+                    ;
             Date date=null;
             String text;
+            int version=0;
             int id=0;
             Boolean changetitleflag=false;
             int countarticle=0;
@@ -61,6 +62,7 @@ public class Stmain {
                 if (eventType == XMLStreamReader.START_ELEMENT) {
                     if("title".equals(reader.getName().getLocalPart())){
                         //System.out.println(reader.getElementText());
+                        version=0;
                         title = reader.getElementText();
                         if(changetitleflag){
                             countarticle++;
@@ -102,9 +104,10 @@ public class Stmain {
                     }
                     if("text".equals(reader.getName().getLocalPart())){
                         //System.out.println(reader.getElementText());
+                        version++;
                         text = reader.getElementText();
                         //System.out.println(title+date+name+text+id+comment);
-                        coll.insert(new Wikitext(title,date,name,text,id,comment));
+                        coll.insert(new Wikitext(title,date,name,text,id,comment,version));
                         changetitleflag=true;
                         inrev=false;
                         incon=false;

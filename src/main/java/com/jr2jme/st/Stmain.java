@@ -38,7 +38,7 @@ public class Stmain {
         BufferedInputStream stream = null;
 
         try {
-            reader = factory.createXMLStreamReader(UnBzip2.unbzip2());
+            reader = factory.createXMLStreamReader(UnBzip2.unbzip2(args[0]));
             // 4. イベントループ
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'");
             sdf.setTimeZone(TimeZone.getTimeZone("UTC"));

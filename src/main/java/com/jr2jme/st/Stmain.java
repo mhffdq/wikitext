@@ -15,9 +15,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
-/**
- * Created by Hirotaka on 2014/03/21.
- */
 public class Stmain {
 
 
@@ -30,7 +27,7 @@ public class Stmain {
             e.printStackTrace();
         }        assert mongo != null;
         DB db=mongo.getDB("wikipediaDB_kondou");
-        DBCollection dbCollection=db.getCollection("text_test2");
+        DBCollection dbCollection=db.getCollection("wikitext");
         JacksonDBCollection<Wikitext,String> coll = JacksonDBCollection.wrap(dbCollection, Wikitext.class,String.class);
         XMLInputFactory factory = XMLInputFactory.newInstance();
 
@@ -66,9 +63,6 @@ public class Stmain {
                         title = reader.getElementText();
                         if(changetitleflag){
                             countarticle++;
-                            if(countarticle>5000) {
-                                break;
-                            }
                         }
                     }
                     if("revision".equals(reader.getName().getLocalPart())){
@@ -137,5 +131,8 @@ public class Stmain {
             }
             mongo.close();
         }
+        long now = System.currentTimeMillis();
+        SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+        System.out.println(sdf1.format(new Date(now)));
     }
 }

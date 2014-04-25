@@ -1,8 +1,14 @@
 package com.jr2jme.st;
 
+import com.jr2jme.doc.WhoWrite;
+import com.jr2jme.wikidiff.Levenshtein3;
+import com.jr2jme.wikidiff.WhoWriteResult;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.MongoClient;
+import net.java.sen.SenFactory;
+import net.java.sen.StringTagger;
+import net.java.sen.dictionary.Token;
 import org.mongojack.JacksonDBCollection;
 
 import javax.xml.stream.XMLInputFactory;
@@ -12,10 +18,7 @@ import java.io.*;
 import java.net.UnknownHostException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.TimeZone;
+import java.util.*;
 
 public class Stmain {
 
@@ -23,7 +26,7 @@ public class Stmain {
     public static void main(String[] args) {
 
         Set<String> AimingArticle = new HashSet<String>(350);
-        fileRead("イスラム.txt", AimingArticle);
+        fileRead("input.txt", AimingArticle);
         //System.out.println(args[0]);
         MongoClient mongo = null;
         try {
@@ -57,14 +60,19 @@ public class Stmain {
             int id = 0;
             Boolean isAimingArticle = false;
             assert reader != null;
-            while (reader.hasNext()) {
+            List<String> prev_text = new ArrayList<String>();
+            int tail=0;
+            int head;
+            List<WhoWrite> prevdata = null;
+            WhoWriteResult[] resultsarray= new WhoWriteResult[20];
+            while(reader.hasNext()){
                 // 4.1 次のイベントを取得
-                int eventType = reader.next();
+                int eventType=reader.getEventType();
                 // 4.2 イベントが要素の開始であれば、名前を出力する
                 if (eventType == XMLStreamReader.START_ELEMENT) {
                     if ("title".equals(reader.getName().getLocalPart())) {
                         //System.out.println(reader.getElementText());
-                        version = 0;
+
                         title = reader.getElementText();
                         if (AimingArticle.contains(title)) {
                             isAimingArticle = true;
@@ -75,6 +83,11 @@ public class Stmain {
                     }
                     if (isAimingArticle) {
                         if ("revision".equals(reader.getName().getLocalPart())) {
+                            version = 0;
+                            prevdata = null;
+                            tail=0;
+                            prev_text = new ArrayList<String>();
+                            resultsarray= new WhoWriteResult[20];
                             inrev = true;
                         }
                         if ("id".equals(reader.getName().getLocalPart())) {
@@ -109,11 +122,72 @@ public class Stmain {
                             //System.out.println(reader.getElementText());
                             version++;
                             text = reader.getElementText();
+                            StringTagger tagger = SenFactory.getStringTagger(null);
+                            List<Token> tokens = new ArrayList<Token>();
+                            try {
+                                tagger.analyze(text, tokens);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            List<String> current_text = new ArrayList<String>(tokens.size());
+
+                            for(Token token:tokens){
+                                current_text.add(token.getSurface());
+                            }
                             //System.out.println(title+date+name+text+id+comment);
-                            coll.insert(new Wikitext(title, date, name, text, id, comment, version));
+                            Levenshtein3 d = new Levenshtein3();
+                            List<String> diff = d.diff(prev_text, current_text);
+                            WhoWriteResult now=whowrite(title,name,prevdata,current_text,prev_text,diff,version);
+                            //coll.insert(new Wikitext(title, date, name, text, id, comment, version));
+                            int last;
+                            if(tail>=20){
+                                last=20;
+                                head=tail+1;
+                            }
+                            else{
+                                last=tail;
+                                head=0;
+                            }
+                            for(int ccc=0;ccc<last;ccc++){//リバート検知
+                                int index=(head+ccc)%20;
+                                if(now.compare(resultsarray[index])){
+                                    //System.out.println(now.version+":"+resultsarray[index].version);
+                                    int dd=0;
+                                    int ad=0;
+                                    for(String type:diff){
+                                        if(type.equals("+")){
+                                            //System.out.println(now.getInsertedTerms().getTerms().get(dd));
+                                            now.getWhoWritever().getWhowritelist().get(ad).setEditor(resultsarray[index].getDellist().get(dd));
+                                            //now.whoWrite.getEditors().set(ad,resultsarray[ccc].dellist.get(dd));
+                                            dd++;
+                                            ad++;
+                                        }
+                                        else if(type.equals("|")){
+                                            ad++;
+                                        }
+                                    }
+                                    //now=whowrite(current_editor,prevdata,text,prevtext,delta,offset+ver+1)
+                                    break;
+                                }
+                                if(now.comparehash(resultsarray[ccc].getText())){//完全に戻していた場合
+                                    int indext=0;
+                                    for(WhoWrite who:now.getWhoWritever().getWhowritelist()){
+                                        who.setEditor(resultsarray[ccc].getWhoWritever().getWhowritelist().get(indext).getEditor());
+                                        indext++;
+                                    }
+                                    break;
+                                }
+                            }
+                            resultsarray[tail%20]=now;
+                            tail++;
+                            prevdata=now.getWhoWritever().getWhowritelist();
+                            prev_text=current_text;
+
                             inrev = false;
                             incon = false;
+
                         }
+
                     }
                     //System.out.println(reader.getName().getLocalPart());
                 }
@@ -145,6 +219,37 @@ public class Stmain {
         System.out.println(sdf1.format(new Date(now)));
     }
 
+    private static WhoWriteResult whowrite(String title,String currenteditor,List<WhoWrite> prevdata,List<String> text,List<String> prevtext,List<String> delta,int ver) {//誰がどこを書いたか
+        int a = 0;//この関数が一番重要
+        int b = 0;
+        WhoWriteResult whowrite = new WhoWriteResult(title, text, currenteditor, ver);
+        for (String aDelta : delta) {//順番に見て，単語が残ったか追加されたかから，誰がどこ書いたか
+            //System.out.println(delta.get(x));
+            if (aDelta.equals("+")) {
+                //System.out.println(text.get(a));
+                whowrite.addaddterm(text.get(a));
+                a++;
+            } else if (aDelta.equals("-")) {
+                whowrite.adddelterm(prevdata.get(b).getEditor(), prevtext.get(b));
+                b++;
+            } else if (aDelta.equals("|")) {
+                //System.out.println(prevdata.getText_editor().get(b).getTerm());
+                whowrite.remain(prevdata.get(b).getEditor(), text.get(a));
+                a++;
+                b++;
+            }
+        }
+        whowrite.complete(prevdata);
+        /*coll3.insert(whowrite.getInsertedTerms());
+        for (DeletedTerms de : whowrite.getDeletedTerms().values()){
+            coll4.insert(de);
+        }*/
+        return whowrite;
+
+
+
+    }
+
     public static void fileRead(String filePath, Set<String> aiming) {
         FileReader fr = null;
         BufferedReader br = null;
@@ -171,3 +276,5 @@ public class Stmain {
         }
     }
 }
+
+

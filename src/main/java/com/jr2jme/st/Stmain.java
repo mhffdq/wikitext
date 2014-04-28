@@ -129,7 +129,7 @@ public class Stmain {
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
-                            List<String> current_text = new ArrayList<String>(tokens.size());
+                            List<String> current_text = new ArrayList<String>(tokens.size()+1);
 
                             for(Token token:tokens){
                                 current_text.add(token.getSurface());

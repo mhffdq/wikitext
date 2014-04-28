@@ -25,13 +25,16 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Stmain {
+
+
     static JacksonDBCollection<WhoWrite,String> coll2;
     static JacksonDBCollection<InsertedTerms,String> coll3;//insert
     static JacksonDBCollection<DeletedTerms,String> coll4;//del&
     public static void main(String[] args) {
 
 
-        Set<String> AimingArticle = fileRead("input.txt");
+        Set<String> AimingArticle = new HashSet<String>(350);
+        fileRead("input.txt", AimingArticle);
         //System.out.println(args[0]);
         MongoClient mongo = null;
         try {
@@ -87,12 +90,6 @@ public class Stmain {
                         title = reader.getElementText();
                         if (AimingArticle.contains(title)) {
                             isAimingArticle = true;
-                            version = 0;
-                            prevdata = null;
-                            tail=0;
-                            prev_text = new ArrayList<String>();
-                            resultsarray= new WhoWriteResult[20];
-
                         } else {
                             isAimingArticle = false;
                         }
@@ -100,6 +97,11 @@ public class Stmain {
                     }
                     if (isAimingArticle) {
                         if ("revision".equals(reader.getName().getLocalPart())) {
+                            version = 0;
+                            prevdata = null;
+                            tail=0;
+                            prev_text = new ArrayList<String>();
+                            resultsarray= new WhoWriteResult[20];
                             inrev = true;
                         }
                         if ("id".equals(reader.getName().getLocalPart())) {
@@ -269,10 +271,9 @@ public class Stmain {
 
     }
 
-    public static Set<String> fileRead(String filePath) {
+    public static void fileRead(String filePath, Set<String> aiming) {
         FileReader fr = null;
         BufferedReader br = null;
-        Set<String> AimingArticle=new HashSet<String>();
         try {
             fr = new FileReader(filePath);
             br = new BufferedReader(fr);
@@ -280,7 +281,7 @@ public class Stmain {
             String line;
             while ((line = br.readLine()) != null) {
                 System.out.println(line);
-                AimingArticle.add(line);
+                aiming.add(line);
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -294,7 +295,6 @@ public class Stmain {
                 e.printStackTrace();
             }
         }
-        return AimingArticle;
     }
 }
 

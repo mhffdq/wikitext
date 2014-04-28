@@ -1,5 +1,7 @@
 package com.jr2jme.st;
 
+import com.jr2jme.doc.DeletedTerms;
+import com.jr2jme.doc.InsertedTerms;
 import com.jr2jme.doc.WhoWrite;
 import com.jr2jme.wikidiff.Levenshtein3;
 import com.jr2jme.wikidiff.WhoWriteResult;
@@ -19,11 +21,17 @@ import java.net.UnknownHostException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Stmain {
 
 
+    static JacksonDBCollection<WhoWrite,String> coll2;
+    static JacksonDBCollection<InsertedTerms,String> coll3;//insert
+    static JacksonDBCollection<DeletedTerms,String> coll4;//del&
     public static void main(String[] args) {
+
 
         Set<String> AimingArticle = new HashSet<String>(350);
         fileRead("input.txt", AimingArticle);
@@ -36,9 +44,15 @@ public class Stmain {
         }
         assert mongo != null;
         DB db = mongo.getDB("wikipediaDB_kondou");
-        DBCollection dbCollection = db.getCollection("wikitext_Islam");
+        DBCollection dbCollection = db.getCollection("wikitext_Test");
         JacksonDBCollection<Wikitext, String> coll = JacksonDBCollection.wrap(dbCollection, Wikitext.class, String.class);
         XMLInputFactory factory = XMLInputFactory.newInstance();
+        DBCollection dbCollection2=db.getCollection("Editor_Term_Test");
+        DBCollection dbCollection3=db.getCollection("InsertedTerms_Test");
+        DBCollection dbCollection4=db.getCollection("DeletedTerms_Test");
+        coll2 = JacksonDBCollection.wrap(dbCollection2, WhoWrite.class,String.class);
+        coll3 = JacksonDBCollection.wrap(dbCollection3, InsertedTerms.class,String.class);
+        coll4 = JacksonDBCollection.wrap(dbCollection4, DeletedTerms.class,String.class);
 
         XMLStreamReader reader = null;
         BufferedInputStream stream = null;
@@ -132,13 +146,18 @@ public class Stmain {
                             List<String> current_text = new ArrayList<String>(tokens.size()+1);
 
                             for(Token token:tokens){
-                                current_text.add(token.getSurface());
+                                String regex = "^[ -/:-@\\[-\\`\\{-\\~]+$";
+                                Pattern p1 = Pattern.compile(regex);
+                                Matcher m = p1.matcher(token.getSurface());
+                                if(!m.find()) {
+                                    current_text.add(token.getSurface());
+                                }
                             }
                             //System.out.println(title+date+name+text+id+comment);
                             Levenshtein3 d = new Levenshtein3();
                             List<String> diff = d.diff(prev_text, current_text);
                             WhoWriteResult now=whowrite(title,name,prevdata,current_text,prev_text,diff,version);
-                            //coll.insert(new Wikitext(title, date, name, text, id, comment, version));
+
                             int last;
                             if(tail>=20){
                                 last=20;
@@ -178,8 +197,10 @@ public class Stmain {
                                     break;
                                 }
                             }
+                            coll.insert(new Wikitext(title, date, name, text, id, comment, version));
                             resultsarray[tail%20]=now;
                             tail++;
+                            coll2.insert(now.getWhoWritever().getWhowritelist());//ここは20140423現在使う
                             prevdata=now.getWhoWritever().getWhowritelist();
                             prev_text=current_text;
 
@@ -240,10 +261,10 @@ public class Stmain {
             }
         }
         whowrite.complete(prevdata);
-        /*coll3.insert(whowrite.getInsertedTerms());
+        coll3.insert(whowrite.getInsertedTerms());
         for (DeletedTerms de : whowrite.getDeletedTerms().values()){
             coll4.insert(de);
-        }*/
+        }
         return whowrite;
 
 

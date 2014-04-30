@@ -44,14 +44,14 @@ public class Stmain {
         DB db = mongo.getDB("wikipediaDB_kondou");
         DBCollection dbCollection = db.getCollection("wikitext_Test");
         JacksonDBCollection<Wikitext, String> coll = JacksonDBCollection.wrap(dbCollection, Wikitext.class, String.class);
-        XMLInputFactory factory = XMLInputFactory.newInstance();
+
         DBCollection dbCollection2=db.getCollection("Editor_Term_Test");
         DBCollection dbCollection3=db.getCollection("InsertedTerms_Test");
         DBCollection dbCollection4=db.getCollection("DeletedTerms_Test");
         coll2 = JacksonDBCollection.wrap(dbCollection2, WhoWrite.class,String.class);
         coll3 = JacksonDBCollection.wrap(dbCollection3, InsertedTerms.class,String.class);
         coll4 = JacksonDBCollection.wrap(dbCollection4, DeletedTerms.class,String.class);
-
+        XMLInputFactory factory = XMLInputFactory.newInstance();
         XMLStreamReader reader = null;
         BufferedInputStream stream = null;
 

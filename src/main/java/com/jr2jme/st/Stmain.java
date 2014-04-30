@@ -11,6 +11,7 @@ import com.mongodb.MongoClient;
 import net.java.sen.SenFactory;
 import net.java.sen.StringTagger;
 import net.java.sen.dictionary.Token;
+import net.java.sen.filter.stream.CompositeTokenFilter;
 import org.mongojack.JacksonDBCollection;
 
 import javax.xml.stream.XMLInputFactory;
@@ -137,6 +138,13 @@ public class Stmain {
                             version++;
                             text = reader.getElementText();
                             StringTagger tagger = SenFactory.getStringTagger(null);
+
+                            CompositeTokenFilter ctFilter = new CompositeTokenFilter();
+                            ctFilter.readRules(new BufferedReader(new StringReader("名詞-数")));
+                            tagger.addFilter(ctFilter);
+                            ctFilter.readRules(new BufferedReader(new StringReader("記号-アルファベット")));
+                            tagger.addFilter(ctFilter);
+
                             List<Token> tokens = new ArrayList<Token>();
                             try {
                                 tagger.analyze(text, tokens);

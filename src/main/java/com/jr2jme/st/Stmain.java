@@ -78,13 +78,14 @@ public class Stmain {
             WhoWriteResult[] resultsarray= new WhoWriteResult[20];
             while(reader.hasNext()){
                 // 4.1 次のイベントを取得
-                int eventType=reader.getEventType();
+                int eventType=reader.next();
                 // 4.2 イベントが要素の開始であれば、名前を出力する
                 if (eventType == XMLStreamReader.START_ELEMENT) {
                     if ("title".equals(reader.getName().getLocalPart())) {
                         //System.out.println(reader.getElementText());
-
+                        //System.out.println(reader.getElementText());
                         title = reader.getElementText();
+                        System.out.println(title);
                         if (AimingArticle.contains(title)) {
                             isAimingArticle = true;
                             version = 0;
@@ -92,8 +93,9 @@ public class Stmain {
                             tail=0;
                             prev_text = new ArrayList<String>();
                             resultsarray= new WhoWriteResult[20];
-
+                            //System.out.println(reader.getElementText());
                         } else {
+                            //System.out.println(reader.getElementText());
                             isAimingArticle = false;
                         }
 
@@ -173,7 +175,7 @@ public class Stmain {
                                     int ad=0;
                                     for(String type:diff){
                                         if(type.equals("+")){
-                                            //System.out.println(now.getInsertedTerms().getTerms().get(dd));
+                                            System.out.println(now.getInsertedTerms().getTerms().get(dd));
                                             now.getWhoWritever().getWhowritelist().get(ad).setEditor(resultsarray[index].getDellist().get(dd));
                                             //now.whoWrite.getEditors().set(ad,resultsarray[ccc].dellist.get(dd));
                                             dd++;

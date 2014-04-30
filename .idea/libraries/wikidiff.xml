@@ -1,7 +1,7 @@
 <component name="libraryTable">
   <library name="wikidiff">
     <CLASSES>
-      <root url="file://$PROJECT_DIR$/../wikidiff" />
+      <root url="file://$PROJECT_DIR$/../wikidiff/target/classes" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>

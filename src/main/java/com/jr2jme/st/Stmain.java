@@ -84,8 +84,8 @@ public class Stmain {
                     if ("title".equals(reader.getName().getLocalPart())) {
                         //System.out.println(reader.getElementText());
                         //System.out.println(reader.getElementText());
-                        title = reader.getElementText();
-                        System.out.println(title);
+                        title = reader.getElementText();//2回getElementText()やっちゃだめ
+                        //System.out.println(title);
                         if (AimingArticle.contains(title)) {
                             isAimingArticle = true;
                             version = 0;
@@ -197,7 +197,7 @@ public class Stmain {
                                     break;
                                 }
                             }
-                            coll.insert(new Wikitext(title, date, name, text, id, comment, version));
+                            //coll.insert(new Wikitext(title, date, name, text, id, comment, version));なくても問題ないけどあると確認しやすいやつ
                             resultsarray[tail%20]=now;
                             tail++;
                             coll2.insert(now.getWhoWritever().getWhowritelist());//ここは20140423現在使う

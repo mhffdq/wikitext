@@ -139,7 +139,7 @@ public class Stmain {
                             StringTagger tagger = SenFactory.getStringTagger(null);
                             List<Token> tokens = new ArrayList<Token>();
                             try {
-                                tagger.analyze(text, tokens);
+                                tokens=tagger.analyze(text, tokens);
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }

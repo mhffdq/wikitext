@@ -1,0 +1,23 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="wikitext:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/wikitext_jar</output-path>
+    <root id="archive" name="wikitext.jar">
+      <element id="directory" name="META-INF">
+        <element id="file-copy" path="$PROJECT_DIR$/src/main/resources/META-INF/MANIFEST.MF" />
+      </element>
+      <element id="module-output" name="wikitext" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/mongojack/mongojack/2.0.0/mongojack-2.0.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/javax/persistence/persistence-api/1.0.2/persistence-api-1.0.2.jar" path-in-jar="/" />
+      <element id="library" level="project" name="wikidiff" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/de/undercouch/bson4jackson/2.2.0/bson4jackson-2.2.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/fasterxml/jackson/core/jackson-databind/2.2.3/jackson-databind-2.2.3.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/fasterxml/jackson/core/jackson-annotations/2.2.3/jackson-annotations-2.2.3.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/commons-io/commons-io/2.4/commons-io-2.4.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../Jar/commons-compress-1.8/commons-compress-1.8.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../Jar/commons-compress-1.8/commons-compress-1.8-javadoc.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/mongodb/mongo-java-driver/2.12.0/mongo-java-driver-2.12.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/fasterxml/jackson/core/jackson-core/2.2.3/jackson-core-2.2.3.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../Jar/lucene-gosen-4.7.0-naist-chasen-origin.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>

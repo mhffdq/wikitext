@@ -1,5 +1,5 @@
 <component name="libraryTable">
-  <library name="commons-compress-1">
+  <library name="commons-compress-11">
     <CLASSES>
       <root url="file://$PROJECT_DIR$/../jar/commons-compress-1.8" />
     </CLASSES>

@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="wikidiff">
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/../wikidiff/target/classes" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="file://$PROJECT_DIR$/../wikidiff/src/main/java" />
+    </SOURCES>
+  </library>
+</component>

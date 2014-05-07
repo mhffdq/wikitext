@@ -2,7 +2,6 @@ package com.jr2jme.st;
 
 import com.jr2jme.doc.DeletedTerms;
 import com.jr2jme.doc.InsertedTerms;
-import com.jr2jme.doc.Revert;
 import com.jr2jme.doc.WhoWrite;
 import com.jr2jme.wikidiff.Levenshtein3;
 import com.jr2jme.wikidiff.WhoWriteResult;
@@ -12,7 +11,6 @@ import com.mongodb.MongoClient;
 import net.java.sen.SenFactory;
 import net.java.sen.StringTagger;
 import net.java.sen.dictionary.Token;
-import net.java.sen.filter.stream.CompositeTokenFilter;
 import org.mongojack.JacksonDBCollection;
 
 import javax.xml.stream.XMLInputFactory;
@@ -27,13 +25,16 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Stmain {
+
+
     static JacksonDBCollection<WhoWrite,String> coll2;
     static JacksonDBCollection<InsertedTerms,String> coll3;//insert
     static JacksonDBCollection<DeletedTerms,String> coll4;//del&
     public static void main(String[] args) {
 
 
-        Set<String> AimingArticle = fileRead("input.txt");
+        Set<String> AimingArticle = new HashSet<String>(350);
+        fileRead("input.txt", AimingArticle);
         //System.out.println(args[0]);
         MongoClient mongo = null;
         try {
@@ -80,30 +81,27 @@ public class Stmain {
             WhoWriteResult[] resultsarray= new WhoWriteResult[20];
             while(reader.hasNext()){
                 // 4.1 次のイベントを取得
-                int eventType=reader.next();
+                int eventType=reader.getEventType();
                 // 4.2 イベントが要素の開始であれば、名前を出力する
                 if (eventType == XMLStreamReader.START_ELEMENT) {
                     if ("title".equals(reader.getName().getLocalPart())) {
                         //System.out.println(reader.getElementText());
-                        //System.out.println(reader.getElementText());
+
                         title = reader.getElementText();
-                        System.out.println(title);
                         if (AimingArticle.contains(title)) {
                             isAimingArticle = true;
-                            version = 0;
-                            prevdata = null;
-                            tail=0;
-                            prev_text = new ArrayList<String>();
-                            resultsarray= new WhoWriteResult[20];
-                            //System.out.println(reader.getElementText());
                         } else {
-                            //System.out.println(reader.getElementText());
                             isAimingArticle = false;
                         }
 
                     }
                     if (isAimingArticle) {
                         if ("revision".equals(reader.getName().getLocalPart())) {
+                            version = 0;
+                            prevdata = null;
+                            tail=0;
+                            prev_text = new ArrayList<String>();
+                            resultsarray= new WhoWriteResult[20];
                             inrev = true;
                         }
                         if ("id".equals(reader.getName().getLocalPart())) {
@@ -139,16 +137,9 @@ public class Stmain {
                             version++;
                             text = reader.getElementText();
                             StringTagger tagger = SenFactory.getStringTagger(null);
-                            CompositeTokenFilter ctFilter = new CompositeTokenFilter();
-
-                            ctFilter.readRules(new BufferedReader(new StringReader("名詞-数")));
-                            tagger.addFilter(ctFilter);
-
-                            ctFilter.readRules(new BufferedReader(new StringReader("記号-アルファベット")));
-                            tagger.addFilter(ctFilter);
                             List<Token> tokens = new ArrayList<Token>();
                             try {
-                                tokens=tagger.analyze(text, tokens);
+                                tagger.analyze(text, tokens);
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
@@ -182,15 +173,11 @@ public class Stmain {
                                     //System.out.println(now.version+":"+resultsarray[index].version);
                                     int dd=0;
                                     int ad=0;
-                                    List<String> edrvted=new ArrayList<String>();
-                                    edrvted.add(resultsarray[index].getInsertedTerms().getEditor());
-                                    List<Integer> rvted=new ArrayList<Integer>();
-                                    rvted.add(resultsarray[index].getInsertedTerms().getVersion());
-                                    new Revert(title,version,rvted,name,edrvted);
                                     for(String type:diff){
                                         if(type.equals("+")){
                                             //System.out.println(now.getInsertedTerms().getTerms().get(dd));
                                             now.getWhoWritever().getWhowritelist().get(ad).setEditor(resultsarray[index].getDellist().get(dd));
+                                            //now.whoWrite.getEditors().set(ad,resultsarray[ccc].dellist.get(dd));
                                             dd++;
                                             ad++;
                                         }
@@ -198,6 +185,7 @@ public class Stmain {
                                             ad++;
                                         }
                                     }
+                                    //now=whowrite(current_editor,prevdata,text,prevtext,delta,offset+ver+1)
                                     break;
                                 }
                                 if(now.comparehash(resultsarray[ccc].getText())){//完全に戻していた場合
@@ -209,10 +197,10 @@ public class Stmain {
                                     break;
                                 }
                             }
-                            //coll.insert(new Wikitext(title, date, name, text, id, comment, version));
+                            coll.insert(new Wikitext(title, date, name, text, id, comment, version));
                             resultsarray[tail%20]=now;
                             tail++;
-                            //coll2.insert(now.getWhoWritever().getWhowritelist());//ここは20140423現在使う
+                            coll2.insert(now.getWhoWritever().getWhowritelist());//ここは20140423現在使う
                             prevdata=now.getWhoWritever().getWhowritelist();
                             prev_text=current_text;
 
@@ -273,9 +261,9 @@ public class Stmain {
             }
         }
         whowrite.complete(prevdata);
-        //coll3.insert(whowrite.getInsertedTerms());
+        coll3.insert(whowrite.getInsertedTerms());
         for (DeletedTerms de : whowrite.getDeletedTerms().values()){
-            //coll4.insert(de);
+            coll4.insert(de);
         }
         return whowrite;
 
@@ -283,10 +271,9 @@ public class Stmain {
 
     }
 
-    public static Set<String> fileRead(String filePath) {
+    public static void fileRead(String filePath, Set<String> aiming) {
         FileReader fr = null;
         BufferedReader br = null;
-        Set<String> AimingArticle=new HashSet<String>();
         try {
             fr = new FileReader(filePath);
             br = new BufferedReader(fr);
@@ -294,7 +281,7 @@ public class Stmain {
             String line;
             while ((line = br.readLine()) != null) {
                 System.out.println(line);
-                AimingArticle.add(line);
+                aiming.add(line);
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -308,7 +295,6 @@ public class Stmain {
                 e.printStackTrace();
             }
         }
-        return AimingArticle;
     }
 }
 

@@ -2,6 +2,7 @@ package com.jr2jme.st;
 
 import com.jr2jme.doc.DeletedTerms;
 import com.jr2jme.doc.InsertedTerms;
+import com.jr2jme.doc.Revert;
 import com.jr2jme.doc.WhoWrite;
 import com.jr2jme.wikidiff.Levenshtein3;
 import com.jr2jme.wikidiff.WhoWriteResult;
@@ -181,11 +182,15 @@ public class Stmain {
                                     //System.out.println(now.version+":"+resultsarray[index].version);
                                     int dd=0;
                                     int ad=0;
+                                    List<String> edrvted=new ArrayList<String>();
+                                    edrvted.add(resultsarray[index].getInsertedTerms().getEditor());
+                                    List<Integer> rvted=new ArrayList<Integer>();
+                                    rvted.add(resultsarray[index].getInsertedTerms().getVersion());
+                                    new Revert(title,version,rvted,name,edrvted);
                                     for(String type:diff){
                                         if(type.equals("+")){
-                                            System.out.println(now.getInsertedTerms().getTerms().get(dd));
+                                            //System.out.println(now.getInsertedTerms().getTerms().get(dd));
                                             now.getWhoWritever().getWhowritelist().get(ad).setEditor(resultsarray[index].getDellist().get(dd));
-                                            //now.whoWrite.getEditors().set(ad,resultsarray[ccc].dellist.get(dd));
                                             dd++;
                                             ad++;
                                         }
@@ -193,7 +198,6 @@ public class Stmain {
                                             ad++;
                                         }
                                     }
-                                    //now=whowrite(current_editor,prevdata,text,prevtext,delta,offset+ver+1)
                                     break;
                                 }
                                 if(now.comparehash(resultsarray[ccc].getText())){//完全に戻していた場合
@@ -205,10 +209,10 @@ public class Stmain {
                                     break;
                                 }
                             }
-                            coll.insert(new Wikitext(title, date, name, text, id, comment, version));
+                            //coll.insert(new Wikitext(title, date, name, text, id, comment, version));
                             resultsarray[tail%20]=now;
                             tail++;
-                            coll2.insert(now.getWhoWritever().getWhowritelist());//ここは20140423現在使う
+                            //coll2.insert(now.getWhoWritever().getWhowritelist());//ここは20140423現在使う
                             prevdata=now.getWhoWritever().getWhowritelist();
                             prev_text=current_text;
 
@@ -269,9 +273,9 @@ public class Stmain {
             }
         }
         whowrite.complete(prevdata);
-        coll3.insert(whowrite.getInsertedTerms());
+        //coll3.insert(whowrite.getInsertedTerms());
         for (DeletedTerms de : whowrite.getDeletedTerms().values()){
-            coll4.insert(de);
+            //coll4.insert(de);
         }
         return whowrite;
 

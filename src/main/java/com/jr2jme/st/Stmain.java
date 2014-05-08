@@ -87,7 +87,7 @@ public class Stmain {
                         //System.out.println(reader.getElementText());
                         //System.out.println(reader.getElementText());
                         title = reader.getElementText();
-                        System.out.println(title);
+                        //System.out.println(title);
                         if (AimingArticle.contains(title)) {
                             isAimingArticle = true;
                             version = 0;
@@ -181,7 +181,6 @@ public class Stmain {
                             List<Integer> rvted=new ArrayList<Integer>();
                             for(int ccc=last;ccc>=0;ccc--){//リバート検知
                                 int index=(head+ccc)%20;
-
                                 if(now.compare(resultsarray[index])){
                                     //System.out.println(now.version+":"+resultsarray[index].version);
                                     int dd=0;
@@ -208,7 +207,6 @@ public class Stmain {
                                         who.setEditor(resultsarray[index].getWhoWritever().getWhowritelist().get(indext).getEditor());
                                         indext++;
                                     }
-
                                     for(int cou=ccc+1;cou<=last;cou++){
                                         int idx=(head+cou)%20;
                                         rvted.add(resultsarray[idx].getInsertedTerms().getVersion());
@@ -218,7 +216,6 @@ public class Stmain {
                                     break;
                                 }
                             }
-
                             coll.insert(new WikiText(title, date, name, text, id, comment, version));
                             resultsarray[tail%20]=now;
                             tail++;

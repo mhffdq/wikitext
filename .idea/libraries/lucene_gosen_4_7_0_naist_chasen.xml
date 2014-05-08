@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="lucene-gosen-4.7.0-naist-chasen">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/../Jar/lucene-gosen-4.7.0-naist-chasen.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>

@@ -199,6 +199,7 @@ public class Stmain {
                                             ad++;
                                         }
                                     }
+                                    coll5.insert(new Revert(title,version,rvted,name,edrvted));
                                     break;
                                 }
                                 if(now.comparehash(resultsarray[index].getText())){//完全に戻していた場合
@@ -213,10 +214,11 @@ public class Stmain {
                                         rvted.add(resultsarray[idx].getInsertedTerms().getVersion());
                                         edrvted.add(resultsarray[idx].getInsertedTerms().getEditor());
                                     }
+                                    coll5.insert(new Revert(title,version,rvted,name,edrvted));
                                     break;
                                 }
                             }
-                            coll5.insert(new Revert(title,version,rvted,name,edrvted));
+
                             coll.insert(new WikiText(title, date, name, text, id, comment, version));
                             resultsarray[tail%20]=now;
                             tail++;

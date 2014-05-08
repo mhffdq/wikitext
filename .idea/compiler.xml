@@ -23,6 +23,7 @@
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="true" />
         <module name="stax test" />
+        <module name="stax_test" />
       </profile>
     </annotationProcessing>
   </component>

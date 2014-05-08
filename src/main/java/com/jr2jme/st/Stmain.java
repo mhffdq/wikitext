@@ -30,6 +30,7 @@ public class Stmain {
     static JacksonDBCollection<WhoWrite,String> coll2;
     static JacksonDBCollection<InsertedTerms,String> coll3;//insert
     static JacksonDBCollection<DeletedTerms,String> coll4;//del&
+    static JacksonDBCollection<Revert,String> coll5;//del&
     public static void main(String[] args) {
 
 
@@ -49,9 +50,11 @@ public class Stmain {
         DBCollection dbCollection2=db.getCollection("Editor_Term_Test");
         DBCollection dbCollection3=db.getCollection("InsertedTerms_Test");
         DBCollection dbCollection4=db.getCollection("DeletedTerms_Test");
+        DBCollection dbCollection5=db.getCollection("Revert");
         coll2 = JacksonDBCollection.wrap(dbCollection2, WhoWrite.class,String.class);
         coll3 = JacksonDBCollection.wrap(dbCollection3, InsertedTerms.class,String.class);
         coll4 = JacksonDBCollection.wrap(dbCollection4, DeletedTerms.class,String.class);
+        coll5 = JacksonDBCollection.wrap(dbCollection5, Revert.class,String.class);
 
         XMLStreamReader reader = null;
         BufferedInputStream stream = null;
@@ -168,15 +171,15 @@ public class Stmain {
                             WhoWriteResult now=whowrite(title,name,prevdata,current_text,prev_text,diff,version);
 
                             int last;
-                            if(tail>=20){
-                                last=20;
+                            if(tail>=19){
+                                last=19;
                                 head=tail+1;
                             }
                             else{
                                 last=tail;
                                 head=0;
                             }
-                            for(int ccc=0;ccc<last;ccc++){//リバート検知
+                            for(int ccc=last;ccc>=0;ccc--){//リバート検知
                                 int index=(head+ccc)%20;
                                 if(now.compare(resultsarray[index])){
                                     //System.out.println(now.version+":"+resultsarray[index].version);
@@ -186,7 +189,7 @@ public class Stmain {
                                     edrvted.add(resultsarray[index].getInsertedTerms().getEditor());
                                     List<Integer> rvted=new ArrayList<Integer>();
                                     rvted.add(resultsarray[index].getInsertedTerms().getVersion());
-                                    new Revert(title,version,rvted,name,edrvted);
+                                    coll5.insert(new Revert(title,version,rvted,name,edrvted));
                                     for(String type:diff){
                                         if(type.equals("+")){
                                             //System.out.println(now.getInsertedTerms().getTerms().get(dd));
@@ -200,11 +203,19 @@ public class Stmain {
                                     }
                                     break;
                                 }
-                                if(now.comparehash(resultsarray[ccc].getText())){//完全に戻していた場合
+                                if(now.comparehash(resultsarray[index].getText())){//完全に戻していた場合
                                     int indext=0;
                                     for(WhoWrite who:now.getWhoWritever().getWhowritelist()){
-                                        who.setEditor(resultsarray[ccc].getWhoWritever().getWhowritelist().get(indext).getEditor());
+                                        who.setEditor(resultsarray[index].getWhoWritever().getWhowritelist().get(indext).getEditor());
                                         indext++;
+                                    }
+
+                                    List<String> edrvted=new ArrayList<String>();
+                                    List<Integer> rvted=new ArrayList<Integer>();
+                                    for(int cou=ccc+1;cou<=last;cou++){
+                                        int idx=(head+cou)%20;
+                                        rvted.add(resultsarray[idx].getInsertedTerms().getVersion());
+                                        edrvted.add(resultsarray[idx].getInsertedTerms().getEditor());
                                     }
                                     break;
                                 }
@@ -212,7 +223,7 @@ public class Stmain {
                             //coll.insert(new Wikitext(title, date, name, text, id, comment, version));
                             resultsarray[tail%20]=now;
                             tail++;
-                            //coll2.insert(now.getWhoWritever().getWhowritelist());//ここは20140423現在使う
+                            //coll2.insert(now.getWhoWritever().getWhowritelist());//ここは20140423現在使う あまりよくない
                             prevdata=now.getWhoWritever().getWhowritelist();
                             prev_text=current_text;
 
@@ -273,9 +284,13 @@ public class Stmain {
             }
         }
         whowrite.complete(prevdata);
-        //coll3.insert(whowrite.getInsertedTerms());
-        for (DeletedTerms de : whowrite.getDeletedTerms().values()){
-            //coll4.insert(de);
+        if(whowrite.getInsertedTerms().getTerms().size()!=0) {
+            coll3.insert(whowrite.getInsertedTerms());
+        }
+        if(whowrite.getDeletedTerms().values().size()!=0) {
+            for (DeletedTerms de : whowrite.getDeletedTerms().values()) {
+                coll4.insert(de);
+            }
         }
         return whowrite;
 

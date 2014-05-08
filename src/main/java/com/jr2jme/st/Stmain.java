@@ -27,13 +27,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Stmain {
-    static JacksonDBCollection<WhoWrite,String> coll2;
+    //static JacksonDBCollection<WhoWrite,String> coll2;
     static JacksonDBCollection<InsertedTerms,String> coll3;//insert
     static JacksonDBCollection<DeletedTerms,String> coll4;//del&
-    static JacksonDBCollection<Revert,String> coll5;//del&
     public static void main(String[] args) {
-
-
         Set<String> AimingArticle = fileRead("input.txt");
         //System.out.println(args[0]);
         MongoClient mongo = null;
@@ -45,16 +42,16 @@ public class Stmain {
         assert mongo != null;
         DB db = mongo.getDB("wikipediaDB_kondou");
         DBCollection dbCollection = db.getCollection("wikitext_Test");
-        JacksonDBCollection<Wikitext, String> coll = JacksonDBCollection.wrap(dbCollection, Wikitext.class, String.class);
+        JacksonDBCollection<WikiText, String> coll = JacksonDBCollection.wrap(dbCollection, WikiText.class, String.class);
         XMLInputFactory factory = XMLInputFactory.newInstance();
-        DBCollection dbCollection2=db.getCollection("Editor_Term_Test");
-        DBCollection dbCollection3=db.getCollection("InsertedTerms_Test");
-        DBCollection dbCollection4=db.getCollection("DeletedTerms_Test");
+        //DBCollection dbCollection2=db.getCollection("Editor_Term_Islam");
+        DBCollection dbCollection3=db.getCollection("InsertedTerms_Islam");
+        DBCollection dbCollection4=db.getCollection("DeletedTerms_Islam");
         DBCollection dbCollection5=db.getCollection("Revert");
-        coll2 = JacksonDBCollection.wrap(dbCollection2, WhoWrite.class,String.class);
+        //coll2 = JacksonDBCollection.wrap(dbCollection2, WhoWrite.class,String.class);
         coll3 = JacksonDBCollection.wrap(dbCollection3, InsertedTerms.class,String.class);
         coll4 = JacksonDBCollection.wrap(dbCollection4, DeletedTerms.class,String.class);
-        coll5 = JacksonDBCollection.wrap(dbCollection5, Revert.class,String.class);
+        JacksonDBCollection<Revert,String> coll5 = JacksonDBCollection.wrap(dbCollection5, Revert.class,String.class);
 
         XMLStreamReader reader = null;
         BufferedInputStream stream = null;
@@ -158,7 +155,7 @@ public class Stmain {
                             List<String> current_text = new ArrayList<String>(tokens.size()+1);
 
                             for(Token token:tokens){
-                                String regex = "^[ -/:-@\\[-\\`\\{-\\~]+$";
+                                String regex = "^[ -/:-@\\[-\\`\\{-\\~！”＃＄％＆’（）＝～｜‘｛＋＊｝＜＞？＿－＾￥＠「；：」、。・]+$";
                                 Pattern p1 = Pattern.compile(regex);
                                 Matcher m = p1.matcher(token.getSurface());
                                 if(!m.find()) {
@@ -179,17 +176,18 @@ public class Stmain {
                                 last=tail;
                                 head=0;
                             }
+
+                            List<String> edrvted=new ArrayList<String>();
+                            List<Integer> rvted=new ArrayList<Integer>();
                             for(int ccc=last;ccc>=0;ccc--){//リバート検知
                                 int index=(head+ccc)%20;
+
                                 if(now.compare(resultsarray[index])){
                                     //System.out.println(now.version+":"+resultsarray[index].version);
                                     int dd=0;
                                     int ad=0;
-                                    List<String> edrvted=new ArrayList<String>();
                                     edrvted.add(resultsarray[index].getInsertedTerms().getEditor());
-                                    List<Integer> rvted=new ArrayList<Integer>();
                                     rvted.add(resultsarray[index].getInsertedTerms().getVersion());
-                                    coll5.insert(new Revert(title,version,rvted,name,edrvted));
                                     for(String type:diff){
                                         if(type.equals("+")){
                                             //System.out.println(now.getInsertedTerms().getTerms().get(dd));
@@ -210,8 +208,6 @@ public class Stmain {
                                         indext++;
                                     }
 
-                                    List<String> edrvted=new ArrayList<String>();
-                                    List<Integer> rvted=new ArrayList<Integer>();
                                     for(int cou=ccc+1;cou<=last;cou++){
                                         int idx=(head+cou)%20;
                                         rvted.add(resultsarray[idx].getInsertedTerms().getVersion());
@@ -220,7 +216,8 @@ public class Stmain {
                                     break;
                                 }
                             }
-                            //coll.insert(new Wikitext(title, date, name, text, id, comment, version));
+                            coll5.insert(new Revert(title,version,rvted,name,edrvted));
+                            coll.insert(new WikiText(title, date, name, text, id, comment, version));
                             resultsarray[tail%20]=now;
                             tail++;
                             //coll2.insert(now.getWhoWritever().getWhowritelist());//ここは20140423現在使う あまりよくない

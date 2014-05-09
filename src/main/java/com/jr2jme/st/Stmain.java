@@ -6,6 +6,7 @@ import com.jr2jme.doc.Revert;
 import com.jr2jme.doc.WhoWrite;
 import com.jr2jme.wikidiff.Levenshtein3;
 import com.jr2jme.wikidiff.WhoWriteResult;
+import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.MongoClient;
@@ -197,7 +198,9 @@ public class Stmain {
                                             ad++;
                                         }
                                     }
-                                    coll5.insert(new Revert(title,version,rvted,name,edrvted));
+                                    BasicDBObject obj = new BasicDBObject();
+                                    obj.append("title",title).append("version",version).append("editor",name).append("rvted",rvted).append("edrvted",edrvted);
+                                    dbCollection5.insert(obj);
                                     break;
                                 }
                                 if(now.comparehash(resultsarray[index].getText())){//完全に戻していた場合
@@ -211,7 +214,9 @@ public class Stmain {
                                         rvted.add(resultsarray[idx].getInsertedTerms().getVersion());
                                         edrvted.add(resultsarray[idx].getInsertedTerms().getEditor());
                                     }
-                                    coll5.insert(new Revert(title,version,rvted,name,edrvted));
+                                    BasicDBObject obj = new BasicDBObject();
+                                    obj.append("title",title).append("version",version).append("editor",name).append("rvted",rvted).append("edrvted",edrvted);
+                                    dbCollection5.insert(obj);
                                     break;
                                 }
                             }

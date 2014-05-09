@@ -40,7 +40,7 @@ public class Stmain {
             e.printStackTrace();
         }
         assert mongo != null;
-        DB db = mongo.getDB("wikipediaDB_kondou");
+        DB db = mongo.getDB("wiki_kondou");
         DBCollection dbCollection = db.getCollection("wikitext_Test");
         JacksonDBCollection<WikiText, String> coll = JacksonDBCollection.wrap(dbCollection, WikiText.class, String.class);
         XMLInputFactory factory = XMLInputFactory.newInstance();
@@ -84,7 +84,6 @@ public class Stmain {
                 // 4.2 イベントが要素の開始であれば、名前を出力する
                 if (eventType == XMLStreamReader.START_ELEMENT) {
                     if ("title".equals(reader.getName().getLocalPart())) {
-                        //System.out.println(reader.getElementText());
                         //System.out.println(reader.getElementText());
                         title = reader.getElementText();
                         //System.out.println(title);
@@ -168,8 +167,8 @@ public class Stmain {
                             WhoWriteResult now=whowrite(title,name,prevdata,current_text,prev_text,diff,version);
 
                             int last;
-                            if(tail>=19){
-                                last=19;
+                            if(tail>=20){
+                                last=20;
                                 head=tail+1;
                             }
                             else{
@@ -179,7 +178,7 @@ public class Stmain {
 
                             List<String> edrvted=new ArrayList<String>();
                             List<Integer> rvted=new ArrayList<Integer>();
-                            for(int ccc=last;ccc>=0;ccc--){//リバート検知
+                            for(int ccc=last-1;ccc>=0;ccc--){//リバート検知
                                 int index=(head+ccc)%20;
                                 if(now.compare(resultsarray[index])){
                                     //System.out.println(now.version+":"+resultsarray[index].version);
@@ -207,7 +206,7 @@ public class Stmain {
                                         who.setEditor(resultsarray[index].getWhoWritever().getWhowritelist().get(indext).getEditor());
                                         indext++;
                                     }
-                                    for(int cou=ccc+1;cou<=last;cou++){
+                                    for(int cou=ccc+1;cou<last;cou++){
                                         int idx=(head+cou)%20;
                                         rvted.add(resultsarray[idx].getInsertedTerms().getVersion());
                                         edrvted.add(resultsarray[idx].getInsertedTerms().getEditor());
@@ -304,7 +303,7 @@ public class Stmain {
 
             String line;
             while ((line = br.readLine()) != null) {
-                System.out.println(line);
+                //System.out.println(line);
                 AimingArticle.add(line);
             }
         } catch (FileNotFoundException e) {

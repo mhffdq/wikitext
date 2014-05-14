@@ -41,7 +41,7 @@ public class Stmain {
             e.printStackTrace();
         }
         assert mongo != null;
-        DB db = mongo.getDB("wiki_kondou");
+        DB db = mongo.getDB("wiki_kondou2");
         DBCollection dbCollection = db.getCollection("wikitext_Test");
         JacksonDBCollection<WikiText, String> coll = JacksonDBCollection.wrap(dbCollection, WikiText.class, String.class);
         XMLInputFactory factory = XMLInputFactory.newInstance();
@@ -155,7 +155,7 @@ public class Stmain {
                             List<String> current_text = new ArrayList<String>(tokens.size()+1);
 
                             for(Token token:tokens){
-                                String regex = "^[ -/:-@\\[-\\`\\{-\\~！”＃＄％＆’（）＝～｜‘｛＋＊｝＜＞？＿－＾￥＠「；：」、。・]+$";
+                                String regex = "^[ -/:-@\\[-`\\{-\\~！”＃＄％＆’（）＝～｜‘｛＋＊｝＜＞？＿－＾￥＠「；：」、。・]+$";
                                 Pattern p1 = Pattern.compile(regex);
                                 Matcher m = p1.matcher(token.getSurface());
                                 if(!m.find()) {
@@ -179,45 +179,29 @@ public class Stmain {
 
                             List<String> edrvted=new ArrayList<String>();
                             List<Integer> rvted=new ArrayList<Integer>();
-                            for(int ccc=last-1;ccc>=0;ccc--){//リバート検知
-                                int index=(head+ccc)%20;
-                                if(now.compare(resultsarray[index])){
+                            for(int ccc=last-1;ccc>=0;ccc--) {//リバート検知
+                                int index = (head + ccc) % 20;
+                                if (now.contain(resultsarray[index])) {
                                     //System.out.println(now.version+":"+resultsarray[index].version);
-                                    int dd=0;
-                                    int ad=0;
+                                    int dd = 0;
+                                    int ad = 0;
                                     edrvted.add(resultsarray[index].getInsertedTerms().getEditor());
                                     rvted.add(resultsarray[index].getInsertedTerms().getVersion());
-                                    for(String type:diff){
-                                        if(type.equals("+")){
-                                            //System.out.println(now.getInsertedTerms().getTerms().get(dd));
+                                    for (String type : diff) {
+                                        if (type.equals("+")) {
                                             now.getWhoWritever().getWhowritelist().get(ad).setEditor(resultsarray[index].getDellist().get(dd));
                                             dd++;
                                             ad++;
-                                        }
-                                        else if(type.equals("|")){
+                                        } else if (type.equals("|")) {
                                             ad++;
                                         }
                                     }
-                                    BasicDBObject obj = new BasicDBObject();
-                                    obj.append("title",title).append("version",version).append("editor",name).append("rvted",rvted).append("edrvted",edrvted);
-                                    dbCollection5.insert(obj);
                                     break;
                                 }
-                                if(now.comparehash(resultsarray[index].getText())){//完全に戻していた場合
-                                    int indext=0;
-                                    for(WhoWrite who:now.getWhoWritever().getWhowritelist()){
-                                        who.setEditor(resultsarray[index].getWhoWritever().getWhowritelist().get(indext).getEditor());
-                                        indext++;
-                                    }
-                                    for(int cou=ccc+1;cou<last;cou++){
-                                        int idx=(head+cou)%20;
-                                        rvted.add(resultsarray[idx].getInsertedTerms().getVersion());
-                                        edrvted.add(resultsarray[idx].getInsertedTerms().getEditor());
-                                    }
+                                if (edrvted.size() != 0) {
                                     BasicDBObject obj = new BasicDBObject();
-                                    obj.append("title",title).append("version",version).append("editor",name).append("rvted",rvted).append("edrvted",edrvted);
+                                    obj.append("title", title).append("version", version).append("editor", name).append("rvted", rvted).append("edrvted", edrvted);
                                     dbCollection5.insert(obj);
-                                    break;
                                 }
                             }
                             coll.insert(new WikiText(title, date, name, text, id, comment, version));

@@ -190,22 +190,27 @@ public class Stmain {
                                     for(String type:diff){
                                         if(type.equals("+")){
                                             //System.out.println(now.getInsertedTerms().getTerms().get(dd));
-                                            now.getWhoWritever().getWhowritelist().get(ad).setEditor(resultsarray[index].getDellist().get(dd));
-                                            dd++;
+                                            WhoWrite who = now.getWhoWritever().getWhowritelist().get(ad);
+                                            if(resultsarray[index].getDelwordcount().size()<=dd){
+                                                break;
+                                            }
+                                            if(who.getTerm().equals(resultsarray[index].getDelwordcount().get(dd))) {
+                                                who.setEditor(resultsarray[index].getDellist().get(dd));
+                                                dd++;
+
+                                            }
                                             ad++;
                                         }
                                         else if(type.equals("|")){
                                             ad++;
                                         }
                                     }
-
                                 }
-                                if(!edrvted.isEmpty()) {
-                                    BasicDBObject obj = new BasicDBObject();
-                                    obj.append("title", title).append("version", version).append("editor", name).append("rvted", rvted).append("edrvted", edrvted);
-                                    dbCollection5.insert(obj);
-                                }
-
+                            }
+                            if(!edrvted.isEmpty()) {
+                                BasicDBObject obj = new BasicDBObject();
+                                obj.append("title", title).append("version", version).append("editor", name).append("rvted", rvted).append("edrvted", edrvted);
+                                dbCollection5.insert(obj);
                             }
                             coll.insert(new WikiText(title, date, name, text, id, comment, version));
                             resultsarray[tail%20]=now;

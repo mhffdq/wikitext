@@ -181,7 +181,7 @@ public class Stmain {
                             List<Integer> rvted=new ArrayList<Integer>();
                             for(int ccc=last-1;ccc>=0;ccc--){//リバート検知
                                 int index=(head+ccc)%20;
-                                if(now.compare(resultsarray[index])){
+                                if(now.contain(resultsarray[index])){
                                     //System.out.println(now.version+":"+resultsarray[index].version);
                                     int dd=0;
                                     int ad=0;
@@ -198,27 +198,14 @@ public class Stmain {
                                             ad++;
                                         }
                                     }
-                                    BasicDBObject obj = new BasicDBObject();
-                                    obj.append("title",title).append("version",version).append("editor",name).append("rvted",rvted).append("edrvted",edrvted);
-                                    dbCollection5.insert(obj);
-                                    break;
+
                                 }
-                                if(now.comparehash(resultsarray[index].getText())){//完全に戻していた場合
-                                    int indext=0;
-                                    for(WhoWrite who:now.getWhoWritever().getWhowritelist()){
-                                        who.setEditor(resultsarray[index].getWhoWritever().getWhowritelist().get(indext).getEditor());
-                                        indext++;
-                                    }
-                                    for(int cou=ccc+1;cou<last;cou++){
-                                        int idx=(head+cou)%20;
-                                        rvted.add(resultsarray[idx].getInsertedTerms().getVersion());
-                                        edrvted.add(resultsarray[idx].getInsertedTerms().getEditor());
-                                    }
+                                if(!edrvted.isEmpty()) {
                                     BasicDBObject obj = new BasicDBObject();
-                                    obj.append("title",title).append("version",version).append("editor",name).append("rvted",rvted).append("edrvted",edrvted);
+                                    obj.append("title", title).append("version", version).append("editor", name).append("rvted", rvted).append("edrvted", edrvted);
                                     dbCollection5.insert(obj);
-                                    break;
                                 }
+
                             }
                             coll.insert(new WikiText(title, date, name, text, id, comment, version));
                             resultsarray[tail%20]=now;

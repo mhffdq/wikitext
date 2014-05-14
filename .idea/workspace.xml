@@ -7,7 +7,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f23501ba-144c-4f97-af9b-1b4172d29a0c" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/jr2jme/st/Stmain.java" afterPath="$PROJECT_DIR$/src/main/java/com/jr2jme/st/Stmain.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <list id="e586fd00-ec40-4bdd-8c00-cf452b8e02f8" name="New changelist" comment="" />
@@ -35,8 +34,8 @@
       <file leaf-file-name="Stmain.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/jr2jme/st/Stmain.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.8070444" vertical-offset="3060" max-vertical-offset="5576">
-              <caret line="211" column="79" selection-start-line="211" selection-start-column="79" selection-end-line="211" selection-end-column="79" />
+            <state vertical-scroll-proportion="0.23430322" vertical-offset="3111" max-vertical-offset="5576">
+              <caret line="192" column="44" selection-start-line="192" selection-start-column="44" selection-end-line="192" selection-end-column="44" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -47,7 +46,7 @@
       <file leaf-file-name="MANIFEST.MF" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/META-INF/MANIFEST.MF">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="119" max-vertical-offset="221">
+            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="221">
               <caret line="7" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="7" selection-end-column="0" />
               <folding />
             </state>
@@ -103,6 +102,11 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="tes" />
+      </map>
+    </option>
   </component>
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
@@ -647,7 +651,11 @@
       <created>1400056505936</created>
       <updated>1400056505936</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="DIFFたぶん実装">
+      <created>1400058810351</created>
+      <updated>1400058810351</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -706,7 +714,8 @@
     <MESSAGE value="このjackson mapper信頼性低い" />
     <MESSAGE value="一つ前と同じ文章の時リバートの保存処理に微妙に失敗" />
     <MESSAGE value="なんか配列変えてないのに失敗" />
-    <option name="LAST_COMMIT_MESSAGE" value="なんか配列変えてないのに失敗" />
+    <MESSAGE value="DIFFたぶん実装" />
+    <option name="LAST_COMMIT_MESSAGE" value="DIFFたぶん実装" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
@@ -1124,14 +1133,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/META-INF/MANIFEST.MF">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="221">
-          <caret line="7" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="7" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/jr2jme/st/UnBzip2.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="374">
@@ -1148,10 +1149,18 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/META-INF/MANIFEST.MF">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="221">
+          <caret line="7" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="7" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/jr2jme/st/Stmain.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.8070444" vertical-offset="3060" max-vertical-offset="5576">
-          <caret line="211" column="79" selection-start-line="211" selection-start-column="79" selection-end-line="211" selection-end-column="79" />
+        <state vertical-scroll-proportion="0.23430322" vertical-offset="3111" max-vertical-offset="5576">
+          <caret line="192" column="44" selection-start-line="192" selection-start-column="44" selection-end-line="192" selection-end-column="44" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>

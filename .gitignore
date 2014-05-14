@@ -13,7 +13,11 @@ out/artifacts/stax_test_jar/stax_test.jar
 *.class
 in.txt
 .idea/workspace.xml
+<<<<<<< HEAD
 target/classes/com/jr2jme/st/Stmain.class
 *.xml
 *.class
 *.iml
+=======
+target/classes/com/jr2jme/st/Stmain.class
+>>>>>>> 066dba31b6682c6c63dad60969e83259157a4a4c

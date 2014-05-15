@@ -237,7 +237,10 @@ public class Stmain {
                                 obj.append("title", title).append("version", version).append("editor", name).append("rvted", rvted).append("edrvted", edrvted);
                                 dbCollection5.insert(obj);
                             }
-                            coll.insert(new WikiText(title, date, name, text, id, comment, version));
+                            BasicDBObject wikitext = new BasicDBObject();
+                            wikitext.append("title", title).append("name", name).append("date", name).append("revison", id).append("text", text).append("comment",comment).append("version",version);
+                            dbCollection.insert(wikitext);
+                            //coll.insert(new WikiText(title, date, name, text, id, comment, version));
                             resultsarray[tail%20]=now;
                             tail++;
                             //coll2.insert(now.getWhoWritever().getWhowritelist());//ここは20140423現在使う あまりよくない

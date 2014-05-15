@@ -179,30 +179,55 @@ public class Stmain {
 
                             List<String> edrvted=new ArrayList<String>();
                             List<Integer> rvted=new ArrayList<Integer>();
-                            for(int ccc=last-1;ccc>=0;ccc--){//リバート検知
+                            boolean isnotflag = true;
+                            for(int ccc=last-2;ccc>=0;ccc--){
                                 int index=(head+ccc)%20;
-                                if(now.contain(resultsarray[index])){
-                                    //System.out.println(now.version+":"+resultsarray[index].version);
-                                    int dd=0;
-                                    int ad=0;
-                                    edrvted.add(resultsarray[index].getInsertedTerms().getEditor());
-                                    rvted.add(resultsarray[index].getInsertedTerms().getVersion());
-                                    for(String type:diff){
-                                        if(type.equals("+")){
-                                            //System.out.println(now.getInsertedTerms().getTerms().get(dd));
-                                            WhoWrite who = now.getWhoWritever().getWhowritelist().get(ad);
-                                            if(resultsarray[index].getDelwordcount().size()<=dd){
-                                                break;
-                                            }
-                                            if(who.getTerm().equals(resultsarray[index].getDelwordcount().get(dd))) {
-                                                who.setEditor(resultsarray[index].getDellist().get(dd));
-                                                dd++;
-
-                                            }
-                                            ad++;
+                                if(!resultsarray[index].isreverted()) {
+                                    if (now.getText().equals(resultsarray[index].getText())) {//完全に戻していた場合
+                                        int indext = 0;
+                                        for (WhoWrite who : now.getWhoWritever().getWhowritelist()) {
+                                            who.setEditor(resultsarray[index].getWhoWritever().getWhowritelist().get(indext).getEditor());
+                                            indext++;
                                         }
-                                        else if(type.equals("|")){
-                                            ad++;
+                                        for (int cou = ccc + 1; cou < last; cou++) {
+                                            int idx = (head + cou) % 20;
+                                            rvted.add(resultsarray[idx].getInsertedTerms().getVersion());
+                                            edrvted.add(resultsarray[idx].getInsertedTerms().getEditor());
+                                        } //dbCollection5.insert(obj);
+                                        isnotflag = false;
+                                        resultsarray[index].reverted();
+                                        break;
+                                    }
+                                }
+                            }
+                            if(isnotflag) {
+                                for (int ccc = last - 1; ccc >= 0; ccc--) {//リバート検知
+                                    int index = (head + ccc) % 20;
+                                    if(!resultsarray[index].isreverted()) {
+                                        if (now.contain(resultsarray[index])) {
+                                            //System.out.println(now.version+":"+resultsarray[index].version);
+                                            int dd = 0;
+                                            int ad = 0;
+                                            for (String type : diff) {
+                                                if (type.equals("+")) {
+                                                    //System.out.println(now.getInsertedTerms().getTerms().get(dd));
+                                                    WhoWrite who = now.getWhoWritever().getWhowritelist().get(ad);
+                                                    if (resultsarray[index].getDellist().size() <= dd) {
+                                                        break;
+                                                    }
+                                                    if (who.getTerm().equals(resultsarray[index].getDelwordcount().get(dd))) {
+                                                        who.setEditor(resultsarray[index].getDellist().get(dd));
+                                                        dd++;
+
+                                                    }
+                                                    ad++;
+                                                } else if (type.equals("|")) {
+                                                    ad++;
+                                                }
+                                            }
+                                            resultsarray[index].reverted();
+                                            edrvted.add(resultsarray[index].getInsertedTerms().getEditor());
+                                            rvted.add(resultsarray[index].getInsertedTerms().getVersion());
                                         }
                                     }
                                 }
@@ -225,6 +250,7 @@ public class Stmain {
                         }
 
                     }
+
                     //System.out.println(reader.getName().getLocalPart());
                 }
             }

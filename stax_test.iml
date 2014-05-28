@@ -4,36 +4,25 @@
     <output url="file://$MODULE_DIR$/target/classes" />
     <output-test url="file://$MODULE_DIR$/target/test-classes" />
     <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/src/main/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/test/java" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/main/resources" type="java-resource" />
-      <sourceFolder url="file://$MODULE_DIR$/src/main/java" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="Maven: org.mongojack:mongojack:2.0.0" level="project" />
-    <orderEntry type="library" name="Maven: org.mongodb:mongo-java-driver:2.12.0" level="project" />
-    <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-databind:2.2.3" level="project" />
-    <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.2.3" level="project" />
-    <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-core:2.2.3" level="project" />
-    <orderEntry type="library" name="Maven: de.undercouch:bson4jackson:2.2.0" level="project" />
-    <orderEntry type="library" name="Maven: org.mongojack:mongojack:2.0.0" level="project" />
-    <orderEntry type="library" name="Maven: org.mongodb:mongo-java-driver:2.12.0" level="project" />
-    <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-databind:2.2.3" level="project" />
-    <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.2.3" level="project" />
-    <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-core:2.2.3" level="project" />
-    <orderEntry type="library" name="Maven: de.undercouch:bson4jackson:2.2.0" level="project" />
     <orderEntry type="library" name="wikidiff" level="project" />
+    <orderEntry type="library" name="lucene-gosen-4.7.0-naist-chasen-origin" level="project" />
+    <orderEntry type="library" name="lucene-gosen-4.7.0-naist-chasen-origin" level="project" />
+    <orderEntry type="library" name="commons-compress-1" level="project" />
     <orderEntry type="library" name="Maven: org.mongojack:mongojack:2.0.0" level="project" />
+    <orderEntry type="library" name="Maven: org.mongodb:mongo-java-driver:2.12.1" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-databind:2.2.3" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.2.3" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-core:2.2.3" level="project" />
     <orderEntry type="library" name="Maven: de.undercouch:bson4jackson:2.2.0" level="project" />
     <orderEntry type="library" name="Maven: javax.persistence:persistence-api:1.0.2" level="project" />
     <orderEntry type="library" name="Maven: commons-io:commons-io:2.4" level="project" />
-    <orderEntry type="library" name="lucene-gosen-4.7.0-naist-chasen-origin" level="project" />
-    <orderEntry type="library" name="lucene-gosen-4.7.0-naist-chasen-origin" level="project" />
-    <orderEntry type="library" name="commons-compress-1" level="project" />
   </component>
 </module>
 

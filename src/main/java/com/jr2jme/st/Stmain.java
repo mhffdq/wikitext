@@ -1,8 +1,6 @@
 package com.jr2jme.st;
 
 import com.jr2jme.doc.DeletedTerms;
-import com.jr2jme.doc.InsertedTerms;
-import com.jr2jme.doc.Revert;
 import com.jr2jme.doc.WhoWrite;
 import com.jr2jme.wikidiff.Levenshtein3;
 import com.jr2jme.wikidiff.WhoWriteResult;
@@ -14,7 +12,6 @@ import net.java.sen.SenFactory;
 import net.java.sen.StringTagger;
 import net.java.sen.dictionary.Token;
 import net.java.sen.filter.stream.CompositeTokenFilter;
-import org.mongojack.JacksonDBCollection;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -29,8 +26,8 @@ import java.util.regex.Pattern;
 
 public class Stmain {
     //static JacksonDBCollection<WhoWrite,String> coll2;
-    static JacksonDBCollection<InsertedTerms,String> coll3;//insert
-    static JacksonDBCollection<DeletedTerms,String> coll4;//del&
+    //static DBCollection dbCollection3;
+    //static DBCollection dbCollection4;
     public static void main(String[] args) {
         Set<String> AimingArticle = fileRead("input.txt");
         //System.out.println(args[0]);
@@ -41,18 +38,13 @@ public class Stmain {
             e.printStackTrace();
         }
         assert mongo != null;
-        DB db = mongo.getDB("wiki_kondou");
-        DBCollection dbCollection = db.getCollection("wikitext_Test");
-        JacksonDBCollection<WikiText, String> coll = JacksonDBCollection.wrap(dbCollection, WikiText.class, String.class);
+        DB db = mongo.getDB("wiki_kondou_");
+        DBCollection dbCollection = db.getCollection("wikitext");
         XMLInputFactory factory = XMLInputFactory.newInstance();
         //DBCollection dbCollection2=db.getCollection("Editor_Term_Islam");
-        DBCollection dbCollection3=db.getCollection("InsertedTerms_Islam");
-        DBCollection dbCollection4=db.getCollection("DeletedTerms_Islam");
-        DBCollection dbCollection5=db.getCollection("Revert");
-        //coll2 = JacksonDBCollection.wrap(dbCollection2, WhoWrite.class,String.class);
-        coll3 = JacksonDBCollection.wrap(dbCollection3, InsertedTerms.class,String.class);
-        coll4 = JacksonDBCollection.wrap(dbCollection4, DeletedTerms.class,String.class);
-        JacksonDBCollection<Revert,String> coll5 = JacksonDBCollection.wrap(dbCollection5, Revert.class,String.class);
+        //dbCollection3=db.getCollection("InsertedTerms_Islam");
+        //dbCollection4=db.getCollection("DeletedTerms_Islam");
+        //DBCollection dbCollection5=db.getCollection("Revert");
 
         XMLStreamReader reader = null;
         BufferedInputStream stream = null;
@@ -153,7 +145,6 @@ public class Stmain {
                                 e.printStackTrace();
                             }
                             List<String> current_text = new ArrayList<String>(tokens.size()+1);
-
                             for(Token token:tokens){
                                 String regex = "^[ -/:-@\\[-\\`\\{-\\~！”＃＄％＆’（）＝～｜‘｛＋＊｝＜＞？＿－＾￥＠「；：」、。・]+$";
                                 Pattern p1 = Pattern.compile(regex);
@@ -235,7 +226,7 @@ public class Stmain {
                             if(!edrvted.isEmpty()) {
                                 BasicDBObject obj = new BasicDBObject();
                                 obj.append("title", title).append("version", version).append("editor", name).append("rvted", rvted).append("edrvted", edrvted);
-                                dbCollection5.insert(obj);
+                                //dbCollection5.insert(obj);
                             }
                             BasicDBObject wikitext = new BasicDBObject();
                             wikitext.append("title", title).append("name", name).append("date", name).append("revison", id).append("text", text).append("comment",comment).append("version",version);
@@ -306,11 +297,16 @@ public class Stmain {
         }
         whowrite.complete(prevdata);
         if(whowrite.getInsertedTerms().getTerms().size()!=0) {
-            coll3.insert(whowrite.getInsertedTerms());
+            BasicDBObject obj = new BasicDBObject();
+            obj.append("title", title).append("editor", whowrite.getInsertedTerms().getEditor()).append("terms", whowrite.getInsertedTerms().getTerms()).append("version", whowrite.getInsertedTerms().getVersion());
+            //dbCollection3.insert(obj);
+            //coll3.insert(whowrite.getInsertedTerms());
         }
         if(whowrite.getDeletedTerms().values().size()!=0) {
             for (DeletedTerms de : whowrite.getDeletedTerms().values()) {
-                coll4.insert(de);
+                BasicDBObject obj = new BasicDBObject();
+                obj.append("title", title).append("editorFrom", de.getEditorFrom()).append("editorTo", de.getEditorTo()).append("version", whowrite.getInsertedTerms().getVersion()).append("terms", de.getTerms()).append("total", de.getTotal()).append("delnum", de.getDelnum());
+                //dbCollection3.insert(obj);
             }
         }
         return whowrite;

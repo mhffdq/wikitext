@@ -38,14 +38,14 @@ public class Stmain {
             e.printStackTrace();
         }
         assert mongo != null;
-        DB db = mongo.getDB("wiki_kondou_");
-        DBCollection dbCollection = db.getCollection("wikitext");
-        XMLInputFactory factory = XMLInputFactory.newInstance();
+        DB db = mongo.getDB("kondou_revDIFF");
+        //DBCollection dbCollection = db.getCollection("wikitext");
         //DBCollection dbCollection2=db.getCollection("Editor_Term_Islam");
         //dbCollection3=db.getCollection("InsertedTerms_Islam");
         //dbCollection4=db.getCollection("DeletedTerms_Islam");
-        //DBCollection dbCollection5=db.getCollection("Revert");
+        DBCollection dbCollection5=db.getCollection("Revert");
 
+        XMLInputFactory factory = XMLInputFactory.newInstance();
         XMLStreamReader reader = null;
         BufferedInputStream stream = null;
 
@@ -171,7 +171,7 @@ public class Stmain {
                             List<String> edrvted=new ArrayList<String>();
                             List<Integer> rvted=new ArrayList<Integer>();
                             boolean isnotflag = true;
-                            for(int ccc=last-2;ccc>=0;ccc--){
+                            /*for(int ccc=last-2;ccc>=0;ccc--){
                                 int index=(head+ccc)%20;
                                 if(!resultsarray[index].isreverted()) {
                                     if (now.getText().equals(resultsarray[index].getText())) {//完全に戻していた場合
@@ -190,7 +190,7 @@ public class Stmain {
                                         break;
                                     }
                                 }
-                            }
+                            }*/
                             if(isnotflag) {
                                 for (int ccc = last - 1; ccc >= 0; ccc--) {//リバート検知
                                     int index = (head + ccc) % 20;
@@ -226,11 +226,11 @@ public class Stmain {
                             if(!edrvted.isEmpty()) {
                                 BasicDBObject obj = new BasicDBObject();
                                 obj.append("title", title).append("version", version).append("editor", name).append("rvted", rvted).append("edrvted", edrvted);
-                                //dbCollection5.insert(obj);
+                                dbCollection5.insert(obj);
                             }
-                            BasicDBObject wikitext = new BasicDBObject();
-                            wikitext.append("title", title).append("name", name).append("date", name).append("revison", id).append("text", text).append("comment",comment).append("version",version);
-                            dbCollection.insert(wikitext);
+                            //BasicDBObject wikitext = new BasicDBObject();
+                            //wikitext.append("title", title).append("name", name).append("date", name).append("revison", id).append("text", text).append("comment",comment).append("version",version);
+                            //dbCollection.insert(wikitext);
                             //coll.insert(new WikiText(title, date, name, text, id, comment, version));
                             resultsarray[tail%20]=now;
                             tail++;

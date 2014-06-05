@@ -21,8 +21,6 @@ import java.net.UnknownHostException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class Stmain {
     //static JacksonDBCollection<WhoWrite,String> coll2;
@@ -146,12 +144,12 @@ public class Stmain {
                             }
                             List<String> current_text = new ArrayList<String>(tokens.size()+1);
                             for(Token token:tokens){
-                                String regex = "^[ -/:-@\\[-\\`\\{-\\~！”＃＄％＆’（）＝～｜‘｛＋＊｝＜＞？＿－＾￥＠「；：」、。・]+$";
+                                /*String regex = "^[ -/:-@\\[-\\`\\{-\\~！”＃＄％＆’（）＝～｜‘｛＋＊｝＜＞？＿－＾￥＠「；：」、。・]+$";
                                 Pattern p1 = Pattern.compile(regex);
                                 Matcher m = p1.matcher(token.getSurface());
-                                if(!m.find()) {
+                                if(!m.find()) {*/
                                     current_text.add(token.getSurface());
-                                }
+                                //}
                             }
                             //System.out.println(title+date+name+text+id+comment);
                             Levenshtein3 d = new Levenshtein3();
@@ -228,8 +226,8 @@ public class Stmain {
                                 obj.append("title", title).append("version", version).append("editor", name).append("rvted", rvted).append("edrvted", edrvted);
                                 dbCollection5.insert(obj);
                             }
-                            //BasicDBObject wikitext = new BasicDBObject();
-                            //wikitext.append("title", title).append("name", name).append("date", name).append("revison", id).append("text", text).append("comment",comment).append("version",version);
+                            BasicDBObject wikitext = new BasicDBObject();
+                            wikitext.append("title", title).append("name", name).append("date", date).append("revison", id).append("text", text).append("comment",comment).append("version",version);
                             //dbCollection.insert(wikitext);
                             //coll.insert(new WikiText(title, date, name, text, id, comment, version));
                             resultsarray[tail%20]=now;
